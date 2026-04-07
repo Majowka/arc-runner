@@ -6,3 +6,5 @@ RUN mkdir -p /usr/local/lib/docker/cli-plugins \
        -o /usr/local/lib/docker/cli-plugins/docker-compose \
     && chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
 USER runner
+
+ENTRYPOINT ["/home/runner/run.sh"]
