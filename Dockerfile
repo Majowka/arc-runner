@@ -7,9 +7,10 @@ RUN mkdir -p /usr/local/lib/docker/cli-plugins \
     && chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
 
 # Wrapper buildx — injects --config for org-wide registry mirror
+# Docker calls plugin as: docker-buildx buildx create ... ($1=buildx, $2=create)
 RUN mv /usr/local/lib/docker/cli-plugins/docker-buildx \
        /usr/local/lib/docker/cli-plugins/docker-buildx.real
-RUN printf '#!/bin/sh\nREAL=/usr/local/lib/docker/cli-plugins/docker-buildx.real\nCONFIG=/home/runner/.docker/buildx/buildkitd.toml\nif [ "$1" = "create" ] && [ -f "$CONFIG" ]; then\n    has_config=0\n    for arg in "$@"; do [ "$arg" = "--config" ] && has_config=1 && break; done\n    [ "$has_config" = "0" ] && exec "$REAL" "$@" --config "$CONFIG"\nfi\nexec "$REAL" "$@"\n' > /usr/local/lib/docker/cli-plugins/docker-buildx \
+RUN printf '#!/bin/sh\nREAL=/usr/local/lib/docker/cli-plugins/docker-buildx.real\nCONFIG=/home/runner/.docker/buildx/buildkitd.toml\nif [ "$2" = "create" ] && [ -f "$CONFIG" ]; then\n    has_config=0\n    for arg in "$@"; do [ "$arg" = "--config" ] && has_config=1 && break; done\n    [ "$has_config" = "0" ] && exec "$REAL" "$@" --config "$CONFIG"\nfi\nexec "$REAL" "$@"\n' > /usr/local/lib/docker/cli-plugins/docker-buildx \
     && chmod +x /usr/local/lib/docker/cli-plugins/docker-buildx
 USER runner
 
