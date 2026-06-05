@@ -1,0 +1,152 @@
+# 🤖 AI DevOps Full Automation
+#
+# Complete automation suite for AI DevOps workflows
+# Copy this file to your repository's .github/workflows/ directory
+#
+# Features:
+# - Auto-triage: Intelligent issue labeling based on content analysis
+# - Auto-merge: Automatic PR merging when CI passes and reviews are approved  
+# - Review bot gate: Quality gate for AI review activity
+#
+# Requirements:
+# 1. Apply standard labels: scripts/setup-repo-labels.sh owner/repo
+# 2. Configure secrets (if using custom tokens):
+#    - GITHUB_TOKEN (usually inherited automatically)
+#    - Optional: custom tokens for specific permissions
+# 3. Adjust runner configuration for your environment
+
+name: 🤖 AI DevOps Full Automation
+
+on:
+  # Issue automation
+  issues:
+    types: [opened, reopened]
+    
+  # PR automation  
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    
+  # Review activity automation
+  pull_request_review:
+    types: [submitted]
+    
+  # Comment-based automation
+  issue_comment:
+    types: [created, edited]
+
+# Global permissions for automation workflows
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  statuses: write
+
+# Prevent concurrent runs on the same issue/PR
+concurrency:
+  group: aidevops-${{ github.event.issue.number || github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  # ── Issue Auto-Triage ──────────────────────────────────────────────
+  auto-triage:
+    name: "🏷️ Auto-Triage Issues"
+    if: github.event_name == 'issues' && (github.event.action == 'opened' || github.event.action == 'reopened')
+    uses: Majowka/.github/.github/workflows/aidevops-auto-triage.yml@main
+    with:
+      # Configure for your environment
+      runner: '["self-hosted", "builder-org-fast"]'  # Majowka org self-hosted runners
+      skip_labeled_issues: true                  # Only triage unlabeled issues
+      enable_auto_dispatch: true                 # Enable AI worker assignment
+      
+      # Customize domain detection for your project
+      domain_keywords: |
+        {
+          "documentation": ["docs", "documentation", "readme", "guide", "runbook", "wiki"],
+          "infrastructure": ["server", "deploy", "infrastructure", "ops", "monitoring"],
+          "frontend": ["ui", "frontend", "react", "vue", "angular", "css", "html"],
+          "backend": ["api", "backend", "server", "database", "db"],
+          "security": ["security", "auth", "ssl", "tls", "vulnerability", "cve"],
+          "testing": ["test", "testing", "jest", "cypress", "e2e", "unit"],
+          "ci-cd": ["ci", "cd", "pipeline", "deploy", "build", "actions"],
+          "bug": ["bug", "error", "exception", "crash", "fail"],
+          "feature": ["feature", "enhancement", "improvement", "add"]
+        }
+    # Secrets are inherited automatically, but you can override:
+    # secrets:
+    #   github_token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+
+  # ── PR Auto-Merge ──────────────────────────────────────────────────
+  auto-merge:
+    name: "🔀 Auto-Merge PRs"
+    if: |
+      github.event_name == 'pull_request' && 
+      (github.event.action == 'opened' || github.event.action == 'synchronize' || 
+       github.event.action == 'reopened' || github.event.action == 'ready_for_review')
+    uses: Majowka/.github/.github/workflows/aidevops-auto-merge.yml@main
+    with:
+      # Configure for your environment
+      runner: '["self-hosted", "builder-org-fast"]'  # Majowka org self-hosted runners
+      merge_method: "SQUASH"                     # SQUASH, MERGE, or REBASE
+      timeout_minutes: 5                         # Timeout for the job
+      skip_forks: true                          # Skip fork PRs for security
+    # Secrets are inherited automatically
+
+  # ── Review Bot Gate ────────────────────────────────────────────────
+  review-bot-gate:
+    name: "✅ Review Bot Gate"
+    if: |
+      github.event_name == 'pull_request' || 
+      github.event_name == 'pull_request_review' ||
+      (github.event_name == 'issue_comment' && github.event.issue.pull_request)
+    uses: Majowka/.github/.github/workflows/aidevops-review-bot-gate.yml@main
+    with:
+      # Configure for your environment
+      runner: '["self-hosted", "builder-org-fast"]'  # Majowka org self-hosted runners
+      require_ai_review: false                  # Set to true to require AI review activity
+      status_context: "gate / review-bot-gate"  # Status check context name
+      
+      # AI reviewers to check for (JSON array)
+      ai_reviewers: '["coderabbit", "gemini", "copilot", "github-actions"]'
+    # Secrets are inherited automatically
+
+# ── Configuration Examples ─────────────────────────────────────────────
+#
+# Self-hosted runners:
+#   runner: "[self-hosted, builder-org]"
+#   runner: "[self-hosted, linux, x64]"
+#
+# Strict AI review requirement:
+#   require_ai_review: true
+#
+# Custom merge strategy:
+#   merge_method: "MERGE"      # Keep individual commits
+#   merge_method: "REBASE"     # Linear history
+#
+# Custom domain keywords for your project:
+#   domain_keywords: |
+#     {
+#       "your-domain": ["keyword1", "keyword2"],
+#       "another-domain": ["keyword3", "keyword4"]
+#     }
+#
+# ── Troubleshooting ────────────────────────────────────────────────────
+#
+# Common issues:
+#
+# 1. "Resource not accessible by integration"
+#    → Check that GITHUB_TOKEN has required permissions
+#    → Ensure repository allows Actions to create/edit issues and PRs
+#
+# 2. "No runner is available" 
+#    → Change runner to "ubuntu-latest" or ensure self-hosted runners are available
+#
+# 3. Labels not found during auto-triage
+#    → Run: scripts/setup-repo-labels.sh owner/repo
+#
+# 4. Auto-merge not working
+#    → Check branch protection rules don't conflict
+#    → Ensure required status checks are passing
+#
+# 5. Review bot gate always failing
+#    → Set require_ai_review: false for permissive mode
+#    → Check ai_reviewers list matches your bot usernames
