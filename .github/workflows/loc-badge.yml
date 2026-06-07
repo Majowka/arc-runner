@@ -1,16 +1,16 @@
 name: LOC Badge — generate lines-of-code SVGs
 
 # Managed by aidevops framework.
-# Upstream logic lives in: marcusquinn/aidevops/.github/workflows/loc-badge-reusable.yml
+# Majowka policy: downstream repos call organization-owned Majowka/.github reusable workflows.
+# Organization-owned reusable logic lives in: Majowka/.github/.github/workflows/loc-badge-reusable.yml
 # This caller is tiny on purpose — all the logic is centralised upstream.
 # Update this caller only to change the trigger filters or input overrides below.
-# For logic fixes, run `aidevops update` to get the latest framework version;
+# For logic fixes, update the reusable workflow in Majowka/.github;
 # your caller will pick up the change automatically (if pinned to @main).
 #
-# Pinning options:
-#   @main           ← auto-update; what this template uses by default
-#   @v3.9.0         ← pin to a specific aidevops version for stability
-#   @<sha>          ← pin to an exact commit
+# Pinning policy:
+#   Downstream repos pin Majowka/.github reusable workflows to a reviewed commit
+#   instead of following a mutable branch ref.
 #
 # What it does: runs `tokei` on the repo, generates two SVGs in
 # .github/badges/ (loc-total.svg + loc-languages.svg), commits them back
@@ -31,9 +31,14 @@ on:
     - cron: '17 4 * * 1'
   workflow_dispatch:
 
+# Permissions ceiling for loc-badge-reusable.yml. The reusable workflow writes
+# generated badge SVGs back to the repository, so the caller must grant contents:write.
+permissions:
+  contents: write
+
 jobs:
   badges:
-    uses: marcusquinn/aidevops/.github/workflows/loc-badge-reusable.yml@main
+    uses: Majowka/.github/.github/workflows/loc-badge-reusable.yml@2cef1633dd6c0ed256d5ad10e8c0e8105f2051de
     # GH#20976: `secrets: inherit` only works within the same GitHub account/org.
     # Cross-account consumers (every downstream user) must pass secrets explicitly.
     # If a new secret is added to loc-badge-reusable.yml, add it here too.
