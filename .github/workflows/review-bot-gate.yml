@@ -1,8 +1,7 @@
 name: Review Bot Gate
 
 # Managed by aidevops framework.
-# Majowka policy: downstream repos call organization-owned Majowka/.github reusable workflows.
-# Organization-owned reusable logic lives in: Majowka/.github/.github/workflows/review-bot-gate-reusable.yml
+# Upstream logic lives in: marcusquinn/aidevops/.github/workflows/review-bot-gate-reusable.yml
 # This caller is tiny on purpose — all the logic is centralised upstream.
 # Update this caller only to change the trigger filters below. For logic fixes,
 # run `aidevops update` to get the latest framework version; your caller will
@@ -22,9 +21,10 @@ name: Review Bot Gate
 # are rate-limited). Set "wait" to block merge until bots come off rate-limit.
 # See: .agents/reference/repos-json-fields.md "review_gate" field.
 #
-# Pinning policy:
-#   Downstream repos pin Majowka/.github reusable workflows to a reviewed commit
-#   instead of following a mutable branch ref.
+# Pinning options:
+#   @main           ← auto-update; what this template uses by default
+#   @v3.9.0         ← pin to a specific aidevops version for stability
+#                     (bump via aidevops sync-workflows after upgrades)
 
 # Permissions ceiling for downstream repos with default_workflow_permissions: read.
 # Reusable workflow job-level permissions cannot exceed the caller's ceiling.
@@ -56,5 +56,5 @@ concurrency:
 
 jobs:
   gate:
-    if: github.event_name != 'issue_comment' || github.event.issue.pull_request
     uses: Majowka/.github/.github/workflows/review-bot-gate-reusable.yml@2cef1633dd6c0ed256d5ad10e8c0e8105f2051de
+    secrets: inherit
