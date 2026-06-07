@@ -1,8 +1,7 @@
 name: Issue Sync - Bi-directional TODO.md ↔ GitHub Issues
 
 # Managed by aidevops framework.
-# Majowka policy: downstream repos call organization-owned Majowka/.github reusable workflows.
-# Organization-owned reusable logic lives in: Majowka/.github/.github/workflows/issue-sync-reusable.yml
+# Upstream logic lives in: marcusquinn/aidevops/.github/workflows/issue-sync-reusable.yml
 # This caller is tiny on purpose — all the logic is centralised upstream.
 # Update this caller only to change the trigger filters below. For logic fixes,
 # run `aidevops update` to get the latest framework version; your caller will
@@ -14,9 +13,10 @@ name: Issue Sync - Bi-directional TODO.md ↔ GitHub Issues
 #   aidevops sync-workflows        # preview resync plan
 #   aidevops sync-workflows --apply
 #
-# Pinning policy:
-#   Downstream repos pin Majowka/.github reusable workflows to a reviewed commit
-#   instead of following a mutable branch ref.
+# Pinning options:
+#   @main           ← auto-update; what this template uses by default
+#   @v3.9.0         ← pin to a specific aidevops version for stability
+#                     (bump via aidevops sync-workflows after upgrades)
 
 # Permissions ceiling for downstream repos with default_workflow_permissions: read.
 # Reusable workflow job-level permissions cannot exceed the caller's ceiling.
