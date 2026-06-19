@@ -56,5 +56,7 @@ concurrency:
 
 jobs:
   gate:
-    uses: Majowka/.github/.github/workflows/review-bot-gate-reusable.yml@2cef1633dd6c0ed256d5ad10e8c0e8105f2051de
+    uses: Majowka/.github/.github/workflows/review-bot-gate-reusable.yml@2de4261c546c8d49797383927c04c071191f3548
+    with:
+      runner: builder-org-fast
     secrets: inherit
