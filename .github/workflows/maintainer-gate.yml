@@ -39,7 +39,7 @@ on:
 
 jobs:
   gate:
-    uses: Majowka/.github/.github/workflows/maintainer-gate-reusable.yml@2de4261c546c8d49797383927c04c071191f3548
+    uses: Majowka/.github/.github/workflows/maintainer-gate-reusable.yml@88fceecc455c85ad5fb07881046fcf27e0585b8d
     with:
       runner: builder-org-fast
     secrets: inherit
