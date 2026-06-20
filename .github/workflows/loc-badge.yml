@@ -33,7 +33,7 @@ on:
 
 jobs:
   badges:
-    uses: Majowka/.github/.github/workflows/loc-badge-reusable.yml@2cef1633dd6c0ed256d5ad10e8c0e8105f2051de
+    uses: Majowka/.github/.github/workflows/loc-badge-reusable.yml@88fceecc455c85ad5fb07881046fcf27e0585b8d
     with:
       runner: builder-org-fast
     # GH#20976: `secrets: inherit` only works within the same GitHub account/org.
