@@ -13,7 +13,7 @@ and this project adheres to [Conventional Commits](https://www.conventionalcommi
 
 - **feat (PR #9)**: Initialised aidevops and added automation workflow callers.
 - **feat (PR #1)**: Installed gh CLI, jq, and python3 in runner image.
-- **feat**: Added buildx wrapper for org-wide registry mirror config injection.
+- **feat (no PR — direct commit)**: Added buildx wrapper for org-wide registry mirror config injection.
 
 ### Changed
 
