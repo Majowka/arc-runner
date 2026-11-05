@@ -5,5 +5,29 @@
   ],
   "dependencyDashboardLabels": [
     "dependencies"
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/^Dockerfile$/"
+      ],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>[a-z-]+) depName=(?<depName>[^\\s]+)\nARG [A-Z_]+=(?<currentValue>\\S+)"
+      ]
+    }
+  ],
+  "packageRules": [
+    {
+      "matchPackageNames": [
+        "ghcr.io/actions/actions-runner"
+      ],
+      "groupName": "actions-runner base image",
+      "labels": [
+        "dependencies",
+        "arc-runner"
+      ],
+      "prPriority": 10
+    }
   ]
 }
