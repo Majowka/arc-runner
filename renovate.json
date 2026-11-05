@@ -5,5 +5,14 @@
   ],
   "dependencyDashboardLabels": [
     "dependencies"
+  ],
+  "packageRules": [
+    {
+      "description": "Nowe wydanie actions/runner: PR od razu (bez harmonogramu), bo GitHub odrzuca stare wersje runnera. Po merge zmiana Dockerfile uruchamia build obrazu.",
+      "matchPackageNames": ["ghcr.io/actions/actions-runner"],
+      "schedule": ["at any time"],
+      "prPriority": 10,
+      "labels": ["dependencies", "runner-version"]
+    }
   ]
 }

@@ -1,4 +1,6 @@
-FROM ghcr.io/actions/actions-runner:latest
+# Wersja runnera przypieta; aktualizacje przychodza jako PR z Renovate (zob. renovate.json).
+# GitHub odrzuca zbyt stare wersje runnera, wiec obraz musi nadazac za wydaniami actions/runner.
+FROM ghcr.io/actions/actions-runner:2.338.2
 
 USER root
 
