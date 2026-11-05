@@ -1,4 +1,9 @@
-FROM ghcr.io/actions/actions-runner:latest
+# Wersja runnera przypieta - aktualizuje ja Renovate (PR po kazdym release actions/runner).
+# GitHub odrzuca zbyt stare runnery (ARC: faza Outdated), wiec obraz musi nadazac za release'ami.
+FROM ghcr.io/actions/actions-runner:2.338.2
+
+# renovate: datasource=github-releases depName=docker/compose
+ARG DOCKER_COMPOSE_VERSION=v5.7.0
 
 USER root
 
@@ -15,7 +20,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /usr/local/lib/docker/cli-plugins \
-    && curl -SL "https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64" \
+    && curl -fSL "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-linux-x86_64" \
        -o /usr/local/lib/docker/cli-plugins/docker-compose \
     && chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
 
