@@ -7,6 +7,10 @@ and this project adheres to [Conventional Commits](https://www.conventionalcommi
 
 ## [Unreleased]
 
+### Fixed
+
+- **fix**: Added `libatomic1` to the runner image. Node.js 26 binaries link dynamically against `libatomic.so.1` (Node 22 does not), so `actions/setup-node` with `node-version: 26` failed with exit code 127 on `builder-org-fast` (Majowka/infrastructure#1136).
+
 ## [0.0.1] - 2026-06-20
 
 ### Added

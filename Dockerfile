@@ -8,6 +8,7 @@ ARG DOCKER_COMPOSE_VERSION=v5.7.0
 USER root
 
 # Install gh CLI, jq, python3 (used by workflows for GitHub API access, JSON parsing, scripting)
+# libatomic1: Node.js 26+ jest dynamicznie linkowany z libatomic.so.1 (Node 22 nie). Bez niej `node` z actions/setup-node konczy sie kodem 127.
 RUN apt-get update \
     && apt-get install -y --no-install-recommends curl ca-certificates \
     && curl -fsSL -o /usr/share/keyrings/githubcli-archive-keyring.gpg \
@@ -16,7 +17,7 @@ RUN apt-get update \
     && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
        | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
     && apt-get update \
-    && apt-get install -y --no-install-recommends gh jq python3 \
+    && apt-get install -y --no-install-recommends gh jq python3 libatomic1 \
     && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /usr/local/lib/docker/cli-plugins \
