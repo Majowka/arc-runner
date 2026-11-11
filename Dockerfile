@@ -3,7 +3,7 @@
 FROM ghcr.io/actions/actions-runner:2.338.2
 
 # renovate: datasource=github-releases depName=docker/compose
-ARG DOCKER_COMPOSE_VERSION=v5.7.0
+ARG DOCKER_COMPOSE_VERSION=v5.7.1
 
 USER root
 
